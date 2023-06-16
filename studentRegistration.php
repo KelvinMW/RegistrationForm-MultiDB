@@ -1,4 +1,6 @@
 <?php
+//include config
+include ("config.php");
 // Retrieve form data
 $name = $_POST['name'];
 // Retrieve other form fields
