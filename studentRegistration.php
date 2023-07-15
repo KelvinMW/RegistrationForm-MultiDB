@@ -8,18 +8,14 @@ $name = $_POST['name'];
 // Get selected database
 $selectedDatabase = $_POST['database'];
 
-// Establish database connection
-$servername = "localhost";
-$username = "your_username";
-$password = "your_password";
 
 // Choose the appropriate database based on the selection
 switch ($selectedDatabase) {
     case "database1":
-        $database = "database1";
+        $database = $database1;
         break;
     case "database2":
-        $database = "database2";
+        $database = $database2;
         break;
     case "database3":
         $database = "database3";
@@ -34,6 +30,7 @@ switch ($selectedDatabase) {
         // Handle invalid selection or fallback to a default database
         $database = "database1";
 }
+//set default values on mandatory fields to default best values
 
 // Create a new PDO connection
 try {
