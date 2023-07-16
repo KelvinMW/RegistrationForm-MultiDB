@@ -2,7 +2,10 @@
 //include config
 include ("config.php");
 // Retrieve form data
-$name = $_POST['name'];
+$surname = $_POST['thirdName'];
+$firstName = $_POST['firstName'];
+$preferredName = $_POST['firstName'].' '.$_POST['secondName'];
+$officialName =$_POST['firstName'].' '.$_POST['secondName'].' '.$_POST['thirdName'];
 // Retrieve other form fields
 
 // Get selected database
@@ -42,7 +45,7 @@ try {
     $stmt = $conn->prepare("INSERT INTO users (name) VALUES (?)");
 
     // Bind parameters and execute the statement
-    $stmt->bindParam(1, $name);
+    $stmt->bindParam(1, $firstName, $officialName, $preferredName, $surname);
     // Bind other form fields
 
     $stmt->execute();
