@@ -7,8 +7,8 @@
   </head>
   <body>
     <h1 class="text-center">ELM SCHOOLS STUDENT REGISTRATION FORM</h1>
-    <form action="studentRegistration.php" method="post">
-      <section class="h-100 h-custom gradient-custom-2">
+<form action="" method="post" id="myForm">
+    <section class="h-100 h-custom gradient-custom-2">
         <div class="container py-5 h-100">
           <div class="row d-flex justify-content-center align-items-center h-100">
             <div class="col-12">
@@ -22,12 +22,12 @@
                           <div class="mb-4 pb-2">
                             <label for="database">Select Section:</label>
                             <select id="database" name="database" required>
-                              <option value="database1">KINDERGARTEN</option>
-                              <option value="database2">LOWER PRIMARY</option>
-                              <option value="database3">UPPER PRIMARY</option>
-                              <option value="database4">SECONDARY</option>
-                              <option value="database5">SCIENCE SECONDARY</option>
-                            </select>
+                                <option value="database1">KINDERGARTEN</option>
+                                <option value="database2">LOWER PRIMARY</option>
+                                <option value="database3">UPPER PRIMARY</option>
+                                <option value="database4">SECONDARY</option>
+                                <option value="database5">SCIENCE SECONDARY</option>
+                              </select>
                           </div>
         <div id="StudentInformation">
           <div class="row">
@@ -502,8 +502,7 @@
                       </div>
 
                       <div class="d-flex justify-content-center">
-                        <button type="submit"
-                          class="btn btn-light btn-lg btn-block">Register</button>
+                        <button type="submit" class="btn btn-light btn-lg btn-block">Submit</button>
                       </div>
                     </div>
                   </div>
@@ -513,6 +512,25 @@
           </div>
         </div>
       </section>
-    </form>
-  </body>
+  </form>
+
+  <script>
+    const form = document.getElementById('myForm');
+    const databaseSelect = document.getElementById('database');
+
+    databaseSelect.addEventListener('change', () => {
+      const selectedValue = databaseSelect.value;
+      const customURLs = {
+        'database1': 'https://example1.com',
+        'database2': 'https://example2.com',
+        'database3': 'https://example3.com',
+        'database4': 'https://example4.com',
+        'database5': 'https://example5.com'
+      };
+
+      const action = customURLs[selectedValue] + '/modules/Admissions/applicationFormProcess.php';
+      form.action = action;
+    });
+  </script>
+</body>
 </html>
