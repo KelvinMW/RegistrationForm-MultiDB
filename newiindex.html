@@ -22,11 +22,11 @@
                           <div class="mb-4 pb-2">
                             <label for="database">Select Section:</label>
                             <select id="database" name="database" required>
-                                <option value="database1">KINDERGARTEN</option>
-                                <option value="database2">LOWER PRIMARY</option>
-                                <option value="database3">UPPER PRIMARY</option>
-                                <option value="database4">SECONDARY</option>
-                                <option value="database5">SCIENCE SECONDARY</option>
+                                <option value="kindergarten_database">KINDERGARTEN</option>
+                                <option value="lower_primary_database">LOWER PRIMARY</option>
+                                <option value="upper_primary_database">UPPER PRIMARY</option>
+                                <option value="secondary_database">SECONDARY</option>
+                                <option value="science_secondary_database">SCIENCE SECONDARY</option>
                               </select>
                           </div>
         <div id="StudentInformation">
@@ -34,7 +34,7 @@
             <div class="col-md-6 mb-4 pb-2">
 
               <div class="form-outline">
-                <input type="text" id="firstName" class="form-control form-control-lg" />
+                <input type="text" id="firstName" name="firstName" class="form-control form-control-lg" />
                 <label class="form-label" for="firstName" required>First name</label>
               </div>
 
@@ -42,7 +42,7 @@
             <div class="col-md-6 mb-4 pb-2">
 
               <div class="form-outline">
-                <input type="text" id="secondName" class="form-control form-control-lg" />
+                <input type="text" id="secondName" name="secondName" class="form-control form-control-lg" />
             <label class="form-label" for="secondName" required>Second name</label>
               </div>
 
@@ -50,11 +50,16 @@
           </div>
           <div class="mb-4 pb-2">
             <div class="form-outline">
-              <input type="text" id="surname" class="form-control form-control-lg" />
+              <input type="text" id="surname" name="surname" class="form-control form-control-lg" />
               <label class="form-label" for="surname" required>Last Name</label>
             </div>
           </div>
         </div>
+        <label for="startNumber">Starting Number:</label>
+        <input type="number" id="startNumber" name="startNumber" min="1" value="1" required>
+        <button type="button" onclick="generateUsername()">Generate Username</button>
+        <label for="username">Generated Username:</label>
+        <input type="text" id="username" name="username" readonly>
         <div class="mb-4 pb-2">
         <label for="gender">Gender:</label>
         <input type="radio" id="male" name="gender" value="Male" required> Male
@@ -63,11 +68,11 @@
           <div class="col-md-6 mb-4 pb-2">
             <div class="form-outline">
               <label class="form-label" for="form3Examplev2">Date of Birth</label>
-              <input type="date" id="form3Examplev2" class="form-control form-control-lg" />
+              <input type="date" id="dob" name="dob" class="form-control form-control-lg" />
             </div>
             <div class="form-label">
               <label class="form-label" for="form3Examplea3">Country of Birth</label>
-              <select>
+              <select id="countryOfBirth" name="countryOfBirth">
               <option value="Afghanistan">Afghanistan</option>
             <option value="Albania">Albania</option>
             <option value="Algeria">Algeria</option>
@@ -335,7 +340,7 @@
                               <option value="3">A level</option>
                             </select>
                             <label for="dateStart">Start Date</label>
-                            <input type="date" value="dateStart">
+                            <input type="date" value="dateStart" id="dateStart" name="dateStart">
                           </div>
                           <label for="previous_Year">Year in Previous School:</label>
                           <select id="previous_Year" name="previous_Year">
@@ -356,10 +361,10 @@
                             <option value="Year 11">Year 11</option>
                             <option value="A Level">A level</option>
                             </select><br><br>
-                          <label for="previous_school">Name of Previous School:</label>
-                          <input type="text" id="previous_school" name="previous_school" required><br><br>
-                          <label for="reason_transfer">Reason for Transfer:</label>
-                          <textarea id="reason_transfer" name="reason_transfer" required></textarea><br><br>
+                          <label for="lastSchool">Name of Previous School:</label>
+                          <input type="text" id="lastSchool" name="lastSchool" required><br><br>
+                          <label for="departureReason">Reason for Transfer:</label>
+                          <textarea id="departureReason" name="departureReason" required></textarea><br><br>
                           <h3 class="fw-normal mb-5" style="color: #4835d4;">Student Medical Information</h3>
                           <div class="mb-4 pb-2">
                             <div class="form-outline">
@@ -377,7 +382,7 @@
                       <div class="mb-4 pb-2">
                         <div class="form-outline form-white">
                           <label class="form-label" for="form3Examplea2">Home Address *Unit, Building, Street</label>
-                          <select>
+                          <select class="select" id="address1">
                             <option value="Ayaxa">Ayaxa</option>
                             <option value="Bada Cas">Bada Cas</option>
                             <option value="Biyo dhacay">Biyo dhacay</option>
@@ -532,5 +537,55 @@
       form.action = action;
     });
   </script>
+  <script>
+    let currentNumber = 1;
+
+// Load the current number from the text file
+function loadCurrentNumber() {
+  const file = new File([""], "currentNumber.txt", "text/plain");
+  const reader = new FileReader();
+  reader.onload = function(event) {
+    currentNumber = parseInt(event.target.result, 10);
+  };
+  reader.readAsText(file);
+}
+
+// Save the current number to the text file
+function saveCurrentNumber() {
+  const file = new File(["" + currentNumber], "currentNumber.txt", "text/plain");
+  const writer = new FileWriter(file);
+  writer.write(currentNumber.toString());
+  writer.close();
+}
+
+loadCurrentNumber();
+
+function setStartingPoint() {
+  const startNumber = document.getElementById('startNumber').value;
+  currentNumber = parseInt(startNumber, 10);
+  saveCurrentNumber();
+}
+
+function generateUsername() {
+  const database = document.getElementById('database').value;
+  const usernameField = document.getElementById('username');
+
+  const prefixMap = {
+    "kindergarten_database": "KG",
+    "lower_primary_database": "LP",
+    "upper_primary_database": "UP",
+    "secondary_database": "SEC",
+    "science_secondary_database": "SS"
+  };
+
+  const prefix = prefixMap[database];
+  const username = `${prefix}${currentNumber}`;
+
+  usernameField.value = username;
+  currentNumber++;
+  saveCurrentNumber();
+}
+  </script>
+
 </body>
 </html>
