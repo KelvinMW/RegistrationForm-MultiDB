@@ -514,3 +514,21 @@
   </form>
   </body>
 </html>
+<script>
+  const form = document.getElementById('registrationForm');
+  const databaseSelect = document.getElementById('database');
+
+  databaseSelect.addEventListener('change', () => {
+    const selectedValue = databaseSelect.value;
+    const customURLs = {
+      'database1': 'https://example1.com',
+      'database2': 'https://example2.com',
+      'database3': 'https://example3.com',
+      'database4': 'https://example4.com',
+      'database5': 'https://example5.com'
+    };
+
+    const action = customURLs[selectedValue] + '/modules/Admissions/applicationFormProcess.php';
+    form.action = action;
+  });
+</script>

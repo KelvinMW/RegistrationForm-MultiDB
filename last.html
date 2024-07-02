@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generate Username</title>
+    <style>
+        /* Simple styling for better readability */
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+        form {
+            max-width: 400px;
+            margin: auto;
+        }
+        label, select, input {
+            display: block;
+            width: 100%;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <form id="usernameForm">
+        <label for="database">Select Section:</label>
+        <select id="database" name="database" required>
+            <option value="KINDERGARTEN">KINDERGARTEN</option>
+            <option value="LOWER PRIMARY">LOWER PRIMARY</option>
+            <option value="UPPER PRIMARY">UPPER PRIMARY</option>
+            <option value="SECONDARY">SECONDARY</option>
+            <option value="SCIENCE SECONDARY">SCIENCE SECONDARY</option>
+        </select>
+
+        <label for="startNumber">Starting Number:</label>
+        <input type="number" id="startNumber" name="startNumber" min="1" value="1" required>
+
+        <button type="button" onclick="setStartingPoint()">Set Starting Point</button>
+        <button type="button" onclick="generateUsername()">Generate Username</button>
+
+        <label for="username">Generated Username:</label>
+        <input type="text" id="username" name="username" readonly>
+    </form>
+
+    <script>
+        let currentNumber = 1;
+
+        // Load the current number from localStorage
+        function loadCurrentNumber() {
+            const savedNumber = localStorage.getItem('currentNumber');
+            if (savedNumber !== null) {
+                currentNumber = parseInt(savedNumber, 10);
+            } else {
+                currentNumber = 1; // Default to 1 if not found
+            }
+        }
+
+        // Save the current number to localStorage
+        function saveCurrentNumber() {
+            localStorage.setItem('currentNumber', currentNumber);
+        }
+
+        // Set the starting point and save it to localStorage
+        function setStartingPoint() {
+            const startNumber = parseInt(document.getElementById('startNumber').value, 10);
+            if (!isNaN(startNumber)) {
+                currentNumber = startNumber;
+                saveCurrentNumber();
+            } else {
+                console.error('Invalid starting number');
+            }
+        }
+
+        // Generate the username and increment the current number
+        function generateUsername() {
+            const database = document.getElementById('database').value;
+            const usernameField = document.getElementById('username');
+
+            const prefixMap = {
+                "KINDERGARTEN": "KG",
+                "LOWER PRIMARY": "LP",
+                "UPPER PRIMARY": "UP",
+                "SECONDARY": "SEC",
+                "SCIENCE SECONDARY": "SS"
+            };
+
+            const prefix = prefixMap[database];
+            const username = `${prefix}${currentNumber}`;
+
+            usernameField.value = username;
+            currentNumber++;
+            saveCurrentNumber();
+        }
+
+        // Load the current number when the script is first run
+        loadCurrentNumber();
+    </script>
+</body>
+</html>
