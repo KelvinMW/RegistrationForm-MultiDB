@@ -268,7 +268,7 @@ if ($stmt->execute()) {
     $stmtEnrolment->close();
 
     // Include a button to go back to absolute URL
-    echo '<a href="index.html">Register New Student</a>';
+    echo '<a href="index.php">Register New Student</a>';
 } else {
     echo "Error creating person record: " . $stmt->error;
 }
