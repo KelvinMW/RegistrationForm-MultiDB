@@ -96,7 +96,7 @@ $databases = [
 </head>
 <body>
     <div class="container py-5">
-        <h1 class="text-center mb-4">ELM Schools Student Registration Form</h1>
+        <h1 class="text-center mb-4">ELM SCHOOLS STUDENT REGISTRATION FORM</h1>
         <form action="studentRegistration.php" method="post" id="registrationForm">
             <div class="card card-registration" style="border-radius: 15px;">
                 <div class="card-body p-0">
