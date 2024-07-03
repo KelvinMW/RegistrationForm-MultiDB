@@ -12,7 +12,7 @@ $databases = [
 <!DOCTYPE html>
 <html>
 <head>
-    <title>ELM Schools Student Registration Form</title>
+    <title>ELM SCHOOLS STUDENT REGISTRATION FORM</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
     <link rel="stylesheet" href="style.css">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
