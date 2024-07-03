@@ -1,9 +1,5 @@
 <?php
 include 'config.php';
-// Debug the posted values
-echo '<pre>';
-print_r($_POST);
-echo '</pre>';
 //default values
 $title= '';
 $surname= '';
@@ -171,13 +167,6 @@ $dbname = $databaseMap[$dbname] ?? '';
 // Create connection
 $conn = new mysqli($host, $user, $password, $dbname);
 
-// Debug connection values
-echo '<br>debug:<br>';
-echo 'Database: ' . $dbname . '<br>';
-echo 'Host: ' . $host . '<br>';
-echo 'User: ' . $user . '<br>';
-echo 'Password: ' . $password . '<br>';
-
 // Check connection
 if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
@@ -189,7 +178,7 @@ $sqlSchoolYear = "SELECT gibbonSchoolYearID FROM gibbonSchoolYear WHERE status =
 $result = $conn->query($sqlSchoolYear);
 if ($result && $row = $result->fetch_assoc()) {
     $gibbonSchoolYearID = $row['gibbonSchoolYearID'];
-    echo 'gibbonSchoolYearID: ' . $gibbonSchoolYearID . '<br>';
+
 } else {
     die("Error fetching current school year: " . $conn->error);
 }
@@ -232,20 +221,15 @@ $stmt->bind_param("sssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss
 // Execute the statement
 if ($stmt->execute()) {
     echo "New student record created successfully!";
-
     // Get the ID of the newly inserted record
     $gibbonPersonID = $conn->insert_id;
     $gibbonSchoolYearID=$gibbonSchoolYearID;
     //debug output: $gibbonPersonID and $gibbonSchoolYearID
-    echo 'debug output: $gibbonPersonID and $gibbonSchoolYearID<br>';
-    echo 'gibbonPersonID: ' . $gibbonPersonID . '<br>';
-    echo 'gibbonSchoolYearID: ' . $gibbonSchoolYearID . '<br>';
     // Prepare insert statement for gibbonStudentEnrolment
     $sqlEnrolment = "INSERT INTO gibbonStudentEnrolment (
         gibbonPersonID, gibbonSchoolYearID, gibbonYearGroupID, gibbonFormGroupID, rollOrder, fields
     ) VALUES (?, ?, ?, ?, 0, NULL)";
     // Debugging: Print SQL query for gibbonStudentEnrolment
-    echo "SQL for gibbonStudentEnrolment: $sqlEnrolment<br>";
 // debug output: Prepare failed: Query was empty
     $stmtEnrolment = $conn->prepare($sqlEnrolment);
     if ($stmtEnrolment === false) {
@@ -267,8 +251,8 @@ if ($stmt->execute()) {
     // Close enrolment statement
     $stmtEnrolment->close();
 
-    // Include a button to go back to absolute URL
-    echo '<a href="index.php">Register New Student</a>';
+    // Include a button to go back button to index.php
+    echo '<a href="index.php" class="back-button">Register New Student</a>';
 } else {
     echo "Error creating person record: " . $stmt->error;
 }
