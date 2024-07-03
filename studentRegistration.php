@@ -1,6 +1,5 @@
 <?php
 include 'config.php';
-include 'enrolment.php';
 // Debug the posted values
 echo '<pre>';
 print_r($_POST);
@@ -158,7 +157,6 @@ $languageSecond = $_POST['languageSecond'] ?? '';
 $languageThird = $_POST['languageThird'] ?? '';
 $gibbonFormGroupID = $_POST['FormGroup'] ?? '';
 $gibbonYearGroupID = $_POST['YearGroup'] ?? '';
-$cookieConsent = $_POST['cookieConsent'] ?? '';
 //$cookieConsent  = !empty($_POST['cookieConsent']) ? implode(',', $_POST['cookieConsent']) : null;
 // Use the correct database name
 $databaseMap = [
@@ -184,20 +182,17 @@ echo 'Password: ' . $password . '<br>';
 if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
-/*I want this insert to also include insert of the same person (gibbonPersonID) to gibbonStudentEnrolment with schema
-$gibbonFormGroupID = $_POST['FormGroup'] ?? '';
-$gibbonYearGroupID = $_POST['YearGroup'] ?? '';
-CREATE TABLE `gibbonStudentEnrolment` (
-    `gibbonStudentEnrolmentID` int(8) UNSIGNED ZEROFILL NOT NULL,
-    `gibbonPersonID` int(10) UNSIGNED ZEROFILL NOT NULL,
-    `gibbonSchoolYearID` int(3) UNSIGNED ZEROFILL NOT NULL,
-    `gibbonYearGroupID` int(3) UNSIGNED ZEROFILL NOT NULL,
-    `gibbonFormGroupID` int(5) UNSIGNED ZEROFILL NOT NULL,
-    `rollOrder` int(2) DEFAULT NULL,
-    `fields` text
-  ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-I will need to use the gibbonPersonID generated in gibbonPerson table to insert into gibbonStudentEnrolment
-*/
+$gibbonSchoolYearID = ''; // Initialize variable
+
+// Fetch the current gibbonSchoolYearID
+$sqlSchoolYear = "SELECT gibbonSchoolYearID FROM gibbonSchoolYear WHERE status = 'Current'";
+$result = $conn->query($sqlSchoolYear);
+if ($result && $row = $result->fetch_assoc()) {
+    $gibbonSchoolYearID = $row['gibbonSchoolYearID'];
+    echo 'gibbonSchoolYearID: ' . $gibbonSchoolYearID . '<br>';
+} else {
+    die("Error fetching current school year: " . $conn->error);
+}
 // Prepare insert statement
 $sql = "INSERT INTO gibbonPerson (
     title,preferredName, officialName, gender, username, status, canLogin, gibbonRoleIDPrimary, dob, email, emailAlternate,
@@ -233,21 +228,52 @@ $stmt->bind_param("sssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss
     , $profession, $employer, $jobTitle, $nextSchool, $departureReason, $transport, $transportNotes, $calendarFeedPersonal
     , $viewCalendarSchool, $viewCalendarPersonal, $viewCalendarSpaceBooking, $fields
 );
-
+//All
 // Execute the statement
 if ($stmt->execute()) {
     echo "New student record created successfully!";
-    //incude a button to go back to absolute URL
+
+    // Get the ID of the newly inserted record
+    $gibbonPersonID = $conn->insert_id;
+    $gibbonSchoolYearID=$gibbonSchoolYearID;
+    //debug output: $gibbonPersonID and $gibbonSchoolYearID
+    echo 'debug output: $gibbonPersonID and $gibbonSchoolYearID<br>';
+    echo 'gibbonPersonID: ' . $gibbonPersonID . '<br>';
+    echo 'gibbonSchoolYearID: ' . $gibbonSchoolYearID . '<br>';
+    // Prepare insert statement for gibbonStudentEnrolment
+    $sqlEnrolment = "INSERT INTO gibbonStudentEnrolment (
+        gibbonPersonID, gibbonSchoolYearID, gibbonYearGroupID, gibbonFormGroupID, rollOrder, fields
+    ) VALUES (?, ?, ?, ?, 0, NULL)";
+    // Debugging: Print SQL query for gibbonStudentEnrolment
+    echo "SQL for gibbonStudentEnrolment: $sqlEnrolment<br>";
+// debug output: Prepare failed: Query was empty
+    $stmtEnrolment = $conn->prepare($sqlEnrolment);
+    if ($stmtEnrolment === false) {
+        die("Prepare failed: " . $conn->error);
+    }
+
+    // Bind values to the statement
+    $stmtEnrolment->bind_param("iiii",
+        $gibbonPersonID, $gibbonSchoolYearID, $gibbonYearGroupID, $gibbonFormGroupID
+    );
+
+    // Execute the statement
+    if ($stmtEnrolment->execute()) {
+        echo "Student enrolment record created successfully!";
+    } else {
+        echo "Error creating enrolment record: " . $stmtEnrolment->error;
+    }
+
+    // Close enrolment statement
+    $stmtEnrolment->close();
+
+    // Include a button to go back to absolute URL
     echo '<a href="index.html">Register New Student</a>';
 } else {
-    $error = $stmt->error;
-    if (empty($error)) {
-        echo "Error creating record (no error message available)";
-    } else {
-        echo "Error creating record: " . $error;
+    echo "Error creating person record: " . $stmt->error;
 }
-}
-// Close statement and connection
-$stmt->close();
+
+// Close person statement and connection
+$stmtPerson->close();
 $conn->close();
 ?>
