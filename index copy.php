@@ -1,3 +1,41 @@
+<?php
+// Database connection details
+include 'config.php';
+$databases = [
+    "kindergarten_database" => "elm_kg",
+    "lower_primary_database" => "elm_lower-p",
+    "upper_primary_database" => "elm_upper-p",
+    "secondary_database" => "elm_secondary",
+    "science_secondary_database" => "elm_science_secondary"
+];
+// Check if a database is selected
+if (isset($_POST['database']) && array_key_exists($_POST['database'], $databases)) {
+    $dbname = $databases[$_POST['database']];
+} else {
+  $dbname = 'elm_secondary';
+}
+// Establish database connection
+$conn = new mysqli($host, $user, $password, $dbname);
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
+}
+// Fetch current school year ID
+$currentSchoolYearQuery = "SELECT gibbonSchoolYearID FROM gibbonSchoolYear WHERE status = 'Current'";
+$currentSchoolYearResult = $conn->query($currentSchoolYearQuery);
+if ($currentSchoolYearResult->num_rows > 0) {
+    $currentSchoolYearRow = $currentSchoolYearResult->fetch_assoc();
+    $currentSchoolYearID = $currentSchoolYearRow['gibbonSchoolYearID'];
+} else {
+    die("No current school year found.");
+}
+// Fetch year groups for the current school year
+$yearGroupQuery = "SELECT gibbonYearGroupID, name FROM gibbonYearGroup";
+$yearGroupResult = $conn->query($yearGroupQuery);
+// Fetch form groups for the current school year
+$formGroupQuery = "SELECT gibbonFormGroupID, name FROM gibbonFormGroup WHERE gibbonSchoolYearID = $currentSchoolYearID";
+$formGroupResult = $conn->query($formGroupQuery);
+$conn->close();
+?>
 <!DOCTYPE html>
 <html>
   <head>
@@ -20,24 +58,49 @@
                         <h3 class="fw-normal mb-5" style="color: #4835d4;">Student Information</h3>
                         <div id="StudentInformation">
                           <div class="mb-4 pb-2">
-                            <label for="database">Select Section:</label>
-                            <select id="database" name="database" required>
-                                <option value="kindergarten_database">KINDERGARTEN</option>
-                                <option value="lower_primary_database">LOWER PRIMARY</option>
-                                <option value="upper_primary_database">UPPER PRIMARY</option>
-                                <option value="secondary_database">SECONDARY</option>
-                                <option value="science_secondary_database">SCIENCE SECONDARY</option>
-                              </select>
+                          <div class="mb-4 pb-2">
+            <label for="database">Select Database:</label>
+            <select name="database" id="database" onchange="this.form.submit()">
+                <option value="" disabled selected>Select a database</option>
+                <?php
+                foreach ($databases as $key => $value) {
+                    echo "<option value='$key'>$key</option>";
+                }
+                ?>
+            </select>
+        </div>
+    <?php if (isset($yearGroupResult) && isset($formGroupResult)): ?>
+
+            <div class="mb-4 pb-2">
+                <label for="YearGroup">Select Year Group:</label>
+                <select class="select" id="YearGroup" name="YearGroup">
+                    <?php
+                    while ($yearGroupRow = $yearGroupResult->fetch_assoc()) {
+                        echo "<option value='" . $yearGroupRow['gibbonYearGroupID'] . "'>" . $yearGroupRow['name'] . "</option>";
+                    }
+                    ?>
+                </select>
+                  </br>
+                <label for="FormGroup">Select Form Group:</label>
+                <select class="select" id="FormGroup" name="FormGroup">
+                    <?php
+                    while ($formGroupRow = $formGroupResult->fetch_assoc()) {
+                        echo "<option value='" . $formGroupRow['gibbonFormGroupID'] . "'>" . $formGroupRow['name'] . "</option>";
+                    }
+                    ?>
+                </select>
+            </div>
+    <?php endif; ?>
                           </div>
+                          <label for="dateStart">Start Date</label>
+                          <input type="date" value="dateStart" id="dateStart" name="dateStart">
         <div id="StudentInformation">
           <div class="row">
             <div class="col-md-6 mb-4 pb-2">
-
               <div class="form-outline">
                 <input type="text" id="firstName" name="firstName" class="form-control form-control-lg" />
                 <label class="form-label" for="firstName" required>First name</label>
               </div>
-
             </div>
             <div class="col-md-6 mb-4 pb-2">
 
@@ -45,7 +108,6 @@
                 <input type="text" id="secondName" name="secondName" class="form-control form-control-lg" />
             <label class="form-label" for="secondName" required>Second name</label>
               </div>
-
             </div>
           </div>
           <div class="mb-4 pb-2">
@@ -317,27 +379,6 @@
           <h3 class="fw-normal mb-5" style="color: #4835d4;">Educational Background</h3>
           </div>
                           <div class="mb-4 pb-2">
-                            <label for="YearGroup"> Select Year Group :</label>
-                            <select class="select">
-                              <option value="2">PlayGroup</option>
-                              <option value="3">KG1</option>
-                              <option value="4">KG2</option>
-                              <option value="3">KG3</option>
-                              <option value="4">Year 1</option>
-                              <option value="3">Year 2</option>
-                              <option value="4">Year 3</option>
-                              <option value="3">Year 4</option>
-                              <option value="4">Year 5</option>
-                              <option value="3">Year 6</option>
-                              <option value="4">Year 7</option>
-                              <option value="3">Yaer 8</option>
-                              <option value="4">Year 9</option>
-                              <option value="3">Year 10</option>
-                              <option value="4">Year 11</option>
-                              <option value="3">A level</option>
-                            </select>
-                            <label for="dateStart">Start Date</label>
-                            <input type="date" value="dateStart" id="dateStart" name="dateStart">
                           </div>
                           <label for="previous_Year">Year in Previous School:</label>
                           <select id="previous_Year" name="previous_Year">
@@ -515,10 +556,8 @@
         </div>
       </section>
   </form>
-
   <script>
     let currentNumber = 1;
-
     // Load the current number from localStorage
     function loadCurrentNumber() {
         const savedNumber = localStorage.getItem('currentNumber');
@@ -528,12 +567,10 @@
             currentNumber = 1; // Default to 1 if not found
         }
     }
-
     // Save the current number to localStorage
     function saveCurrentNumber() {
         localStorage.setItem('currentNumber', currentNumber);
     }
-
     // Set the starting point and save it to localStorage
     function setStartingPoint() {
         const startNumber = parseInt(document.getElementById('startNumber').value, 10);
@@ -544,12 +581,10 @@
             console.error('Invalid starting number');
         }
     }
-
     // Generate the username and increment the current number
     function generateUsername() {
         const database = document.getElementById('database').value;
         const usernameField = document.getElementById('username');
-
         const prefixMap = {
           "kindergarten_database": "KG",
           "lower_primary_database": "LP",
@@ -557,18 +592,14 @@
           "secondary_database": "SEC",
           "science_secondary_database": "SS"
         };
-
         const prefix = prefixMap[database];
         const username = `${prefix}${currentNumber}`;
-
         usernameField.value = username;
         currentNumber++;
         saveCurrentNumber();
     }
-
     // Load the current number when the script is first run
     loadCurrentNumber();
 </script>
-
 </body>
 </html>

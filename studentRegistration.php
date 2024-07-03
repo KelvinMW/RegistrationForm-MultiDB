@@ -1,6 +1,6 @@
 <?php
 include 'config.php';
-
+include 'enrolment.php';
 // Debug the posted values
 echo '<pre>';
 print_r($_POST);
@@ -115,19 +115,19 @@ $gibbonRoleIDPrimary = '003';
 $dob = $_POST['dob'] ?? '';
 $date_obj = new DateTime($dob);
 $dob = $date_obj->format('Y-m-d');
-$email = trim($_POST['email'] ?? '');
+$email = trim($_POST['parent_email'] ?? '');
 $emailAlternate = trim($_POST['emailAlternate'] ?? '');
 $address1 = $_POST['address1'] ?? '';
 $address1District = 'Hargeisa';
 $address1Country = 'Somaliland';
 $phone1 = preg_replace('/[^0-9+]/', '', $_POST['phone1'] ?? '');
 $countryOfBirth = $_POST['countryOfBirth'] ?? '';
-$emergency1Name = $_POST['emergency1Name'] ?? '';
-$emergency1Number1 = $_POST['emergency1Number1'] ?? '';
+$emergency1Name = $_POST['f_fname'].' '.$_POST['f_lname'] ?? '';
+$emergency1Number1 = $_POST['f_phone'] ?? '';
 $emergency1Number2 = $_POST['emergency1Number2'] ?? '';
 $emergency1Relationship = $_POST['emergency1Relationship'] ?? '';
-$emergency2Name = $_POST['emergency2Name'] ?? '';
-$emergency2Number1 = $_POST['emergency2Number1'] ?? '';
+$emergency2Name = $_POST['m_fname'].' '.$_POST['m_lname'] ?? '';
+$emergency2Number1 = $_POST['m_phone'] ?? '';
 $emergency2Number2 = $_POST['emergency2Number2'] ?? '';
 $emergency2Relationship = $_POST['emergency2Relationship'] ?? '';
 $studentID = $_POST['studentID'] ?? '';
@@ -156,6 +156,10 @@ $website = $_POST['website'] ?? '';
 $languageFirst = $_POST['languageFirst'] ?? '';
 $languageSecond = $_POST['languageSecond'] ?? '';
 $languageThird = $_POST['languageThird'] ?? '';
+$gibbonFormGroupID = $_POST['FormGroup'] ?? '';
+$gibbonYearGroupID = $_POST['YearGroup'] ?? '';
+$cookieConsent = $_POST['cookieConsent'] ?? '';
+//$cookieConsent  = !empty($_POST['cookieConsent']) ? implode(',', $_POST['cookieConsent']) : null;
 // Use the correct database name
 $databaseMap = [
     'kindergarten_database' => 'elm_kg',
@@ -180,7 +184,20 @@ echo 'Password: ' . $password . '<br>';
 if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
-
+/*I want this insert to also include insert of the same person (gibbonPersonID) to gibbonStudentEnrolment with schema
+$gibbonFormGroupID = $_POST['FormGroup'] ?? '';
+$gibbonYearGroupID = $_POST['YearGroup'] ?? '';
+CREATE TABLE `gibbonStudentEnrolment` (
+    `gibbonStudentEnrolmentID` int(8) UNSIGNED ZEROFILL NOT NULL,
+    `gibbonPersonID` int(10) UNSIGNED ZEROFILL NOT NULL,
+    `gibbonSchoolYearID` int(3) UNSIGNED ZEROFILL NOT NULL,
+    `gibbonYearGroupID` int(3) UNSIGNED ZEROFILL NOT NULL,
+    `gibbonFormGroupID` int(5) UNSIGNED ZEROFILL NOT NULL,
+    `rollOrder` int(2) DEFAULT NULL,
+    `fields` text
+  ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+I will need to use the gibbonPersonID generated in gibbonPerson table to insert into gibbonStudentEnrolment
+*/
 // Prepare insert statement
 $sql = "INSERT INTO gibbonPerson (
     title,preferredName, officialName, gender, username, status, canLogin, gibbonRoleIDPrimary, dob, email, emailAlternate,
@@ -220,6 +237,8 @@ $stmt->bind_param("sssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss
 // Execute the statement
 if ($stmt->execute()) {
     echo "New student record created successfully!";
+    //incude a button to go back to absolute URL
+    echo '<a href="index.html">Register New Student</a>';
 } else {
     $error = $stmt->error;
     if (empty($error)) {
