@@ -11,9 +11,7 @@ CREATE TABLE users (
     password VARCHAR(255) NOT NULL
 );
 
--- Insert demo users
-INSERT INTO users (username, password) VALUES 
-('demo_user1', '$2y$10$DowJonesIndustrialAverageIsTh35e6OHk/tI5NdWz3xPl8a6uELyG9f2To1Tm2'),
-('demo_user2', '$2y$10$DowJonesIndustrialAverageIsTh35e6OHk/tI5NdWz3xPl8a6uELyG9f2To1Tm2');
-
 -- Note: The passwords are hashed using bcrypt
+-- Add active column to the users table
+ALTER TABLE users ADD active TINYINT(1) NOT NULL DEFAULT 0;
+

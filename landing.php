@@ -9,7 +9,7 @@ if (!isset($_SESSION['user_id'])) {
 require 'db.php';
 
 $stmt = $pdo->prepare("SELECT username FROM users WHERE id = ?");
-stmt->execute([$_SESSION['user_id']]);
+$stmt->execute([$_SESSION['user_id']]);
 $user = $stmt->fetch();
 ?>
 
@@ -21,6 +21,12 @@ $user = $stmt->fetch();
 <body>
     <h2>Welcome, <?php echo htmlspecialchars($user['username']); ?>!</h2>
     <p>You have successfully logged in.</p>
+    <nav>
+        <ul>
+            <li><a href="register.php">Register</a></li>
+            <li><a href="reports.php">Reports</a></li>
+        </ul>
+    </nav>
     <a href="logout.php">Logout</a>
 </body>
 </html>
