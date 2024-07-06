@@ -20,6 +20,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         foreach ($databases as $database) {
             $fetchedData = fetchData($startDate, $endDate, $database);
+            foreach ($fetchedData as &$row) {
+                $row['database'] = $database; // Add database information to each row
+            }
             $data = array_merge($data, $fetchedData);
         }
 
@@ -40,7 +43,7 @@ function exportCSV($data, $startDate, $endDate) {
     header('Content-Disposition: attachment;filename="report_' . $startDate . '_to_' . $endDate . '.csv"');
 
     $output = fopen('php://output', 'w');
-    fputcsv($output, ['Official Name', 'Gender', 'Username', 'DOB', 'Email', 'Address', 'Phone', 'Country of Birth', 'Emergency Contact 1', 'Emergency Contact 1 Number', 'Emergency Contact 2', 'Emergency Contact 2 Number', 'Form Group', 'Year Group']);
+    fputcsv($output, ['Database', 'Official Name', 'Gender', 'Username', 'DOB', 'Email', 'Address', 'Phone', 'Country of Birth', 'Emergency Contact 1', 'Emergency Contact 1 Number', 'Emergency Contact 2', 'Emergency Contact 2 Number', 'Form Group', 'Year Group']);
 
     foreach ($data as $row) {
         fputcsv($output, $row);
@@ -70,9 +73,41 @@ function exportCSV($data, $startDate, $endDate) {
 
     <?php if (!empty($data)): ?>
         <h3>Data from <?php echo htmlspecialchars($startDate); ?> to <?php echo htmlspecialchars($endDate); ?></h3>
+
+        <!-- Filters -->
+        <div>
+            <label for="databaseFilter">Database:</label>
+            <select id="databaseFilter" onchange="filterTable()">
+                <option value="">All</option>
+                <?php foreach ($databases as $database): ?>
+                    <option value="<?php echo htmlspecialchars($database); ?>"><?php echo htmlspecialchars($database); ?></option>
+                <?php endforeach; ?>
+            </select>
+
+            <label for="yearGroupFilter">Year Group:</label>
+            <select id="yearGroupFilter" onchange="filterTable()">
+                <option value="">All</option>
+                <!-- Generate Year Group options dynamically based on data -->
+                <?php
+                $yearGroups = array_unique(array_column($data, 'YearGroup'));
+                foreach ($yearGroups as $yearGroup): ?>
+                    <option value="<?php echo htmlspecialchars($yearGroup); ?>"><?php echo htmlspecialchars($yearGroup); ?></option>
+                <?php endforeach; ?>
+            </select>
+
+            <label for="genderFilter">Gender:</label>
+            <select id="genderFilter" onchange="filterTable()">
+                <option value="">All</option>
+                <option value="M">Male</option>
+                <option value="F">Female</option>
+                <!-- Add more gender options if necessary -->
+            </select>
+        </div>
+
         <table id="reportTable" border="1">
             <thead>
                 <tr>
+                    <th>Database</th>
                     <th>Official Name</th>
                     <th>Gender</th>
                     <th>Username</th>
@@ -92,6 +127,7 @@ function exportCSV($data, $startDate, $endDate) {
             <tbody>
                 <?php foreach ($data as $row): ?>
                     <tr>
+                        <td><?php echo htmlspecialchars($row['database']); ?></td>
                         <td><?php echo htmlspecialchars($row['officialName']); ?></td>
                         <td><?php echo htmlspecialchars($row['gender']); ?></td>
                         <td><?php echo htmlspecialchars($row['username']); ?></td>
@@ -121,6 +157,30 @@ function exportCSV($data, $startDate, $endDate) {
     <a href="logout.php">Logout</a>
 
     <script>
+        function filterTable() {
+            var databaseFilter = document.getElementById("databaseFilter").value.toLowerCase();
+            var yearGroupFilter = document.getElementById("yearGroupFilter").value.toLowerCase();
+            var genderFilter = document.getElementById("genderFilter").value.toLowerCase();
+
+            var table = document.getElementById("reportTable");
+            var rows = table.getElementsByTagName("tr");
+
+            for (var i = 1; i < rows.length; i++) {
+                var cells = rows[i].getElementsByTagName("td");
+                var database = cells[0].innerText.toLowerCase();
+                var yearGroup = cells[13].innerText.toLowerCase();
+                var gender = cells[2].innerText.toLowerCase();
+
+                if ((databaseFilter === "" || database.includes(databaseFilter)) &&
+                    (yearGroupFilter === "" || yearGroup.includes(yearGroupFilter)) &&
+                    (genderFilter === "" || gender.includes(genderFilter))) {
+                    rows[i].style.display = "";
+                } else {
+                    rows[i].style.display = "none";
+                }
+            }
+        }
+
         function printTable() {
             var divToPrint = document.getElementById("reportTable");
             var newWin = window.open("");
