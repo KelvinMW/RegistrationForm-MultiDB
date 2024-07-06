@@ -19,18 +19,38 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <html>
 <head>
     <title>Register</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </head>
 <body>
-    <h2>Register</h2>
-    <?php if (isset($error)) { echo "<p style='color:red;'>$error</p>"; } ?>
-    <?php if (isset($success)) { echo "<p style='color:green;'>$success</p>"; } ?>
-    <form method="POST" action="">
-        <label for="username">Username:</label>
-        <input type="text" id="username" name="username" required><br>
-        <label for="password">Password:</label>
-        <input type="password" id="password" name="password" required><br>
-        <button type="submit">Register</button>
-    </form>
-    <p>Already registered? <a href="login.php">Login here</a></p>
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h2>Register</h2>
+                </div>
+                <div class="card-body">
+                    <?php if (isset($error)) { echo "<div class='alert alert-danger'>$error</div>"; } ?>
+                    <?php if (isset($success)) { echo "<div class='alert alert-success'>$success</div>"; } ?>
+                    <form method="POST" action="">
+                        <div class="form-group">
+                            <label for="username">Username:</label>
+                            <input type="text" id="username" name="username" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="password">Password:</label>
+                            <input type="password" id="password" name="password" class="form-control" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Register</button>
+                    </form>
+                    <p class="mt-3">Already registered? <a href="login.php">Login here</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 </body>
 </html>

@@ -102,8 +102,20 @@ $databases = [
     </script>
 </head>
 <body>
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="collapse navbar-collapse" id="navbarSupportedContent">
+    <ul class="navbar-nav mr-auto">
+      <li class="nav-item active">
+        <a href="index.php" class="btn btn-primary">Register New Student</a>
+        <a href="reports.php" class="btn btn-info">Reports</a>
+        <a href="logout.php" class="btn btn-danger">Logout</a>
+      </li>
+  </div>
+</nav>
     <div class="container py-5">
-        <h1 class="text-center mb-4">ELM SCHOOLS STUDENT REGISTRATION FORM</h1>
         <form action="studentRegistration.php" method="post" id="registrationForm">
             <div class="card card-registration" style="border-radius: 15px;">
                 <div class="card-body p-0">

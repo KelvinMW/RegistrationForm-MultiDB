@@ -58,36 +58,57 @@ function exportCSV($data, $startDate, $endDate) {
 <html>
 <head>
     <title>Reports Page</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </head>
 <body>
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="collapse navbar-collapse" id="navbarSupportedContent">
+    <ul class="navbar-nav mr-auto">
+      <li class="nav-item active">
+        <a href="index.php" class="btn btn-primary">Register New Student</a>
+        <a href="reports.php" class="btn btn-info">Reports</a>
+        <a href="logout.php" class="btn btn-danger">Logout</a>
+      </li>
+  </div>
+</nav>
+<div class="container mt-5">
     <h2>Reports</h2>
-    <form method="POST" action="">
-        <label for="start_date">Start Date:</label>
-        <input type="date" id="start_date" name="start_date" value="<?php echo htmlspecialchars($startDate); ?>" required><br>
-        <label for="end_date">End Date:</label>
-        <input type="date" id="end_date" name="end_date" value="<?php echo htmlspecialchars($endDate); ?>" required><br>
-        <button type="submit">Fetch Data</button>
-        <button type="submit" name="export_csv">Export to CSV</button>
-        <button type="button" onclick="printTable()">Print</button>
+    <form method="POST" action="" class="mb-4">
+        <div class="form-group">
+            <label for="start_date">Start Date:</label>
+            <input type="date" id="start_date" name="start_date" class="form-control" value="<?php echo htmlspecialchars($startDate); ?>" required>
+        </div>
+        <div class="form-group">
+            <label for="end_date">End Date:</label>
+            <input type="date" id="end_date" name="end_date" class="form-control" value="<?php echo htmlspecialchars($endDate); ?>" required>
+        </div>
+        <button type="submit" class="btn btn-primary">Fetch Data</button>
+        <button type="submit" name="export_csv" class="btn btn-secondary">Export to CSV</button>
+        <button type="button" class="btn btn-info" onclick="printTable()">Print</button>
     </form>
 
     <?php if (!empty($data)): ?>
         <h3>Data from <?php echo htmlspecialchars($startDate); ?> to <?php echo htmlspecialchars($endDate); ?></h3>
 
         <!-- Filters -->
-        <div>
-            <label for="databaseFilter">Database:</label>
-            <select id="databaseFilter" onchange="filterTable()">
+        <div class="form-inline mb-3">
+            <label for="databaseFilter" class="mr-2">Database:</label>
+            <select id="databaseFilter" class="form-control mr-4" onchange="filterTable()">
                 <option value="">All</option>
                 <?php foreach ($databases as $database): ?>
                     <option value="<?php echo htmlspecialchars($database); ?>"><?php echo htmlspecialchars($database); ?></option>
                 <?php endforeach; ?>
             </select>
 
-            <label for="yearGroupFilter">Year Group:</label>
-            <select id="yearGroupFilter" onchange="filterTable()">
+            <label for="yearGroupFilter" class="mr-2">Year Group:</label>
+            <select id="yearGroupFilter" class="form-control mr-4" onchange="filterTable()">
                 <option value="">All</option>
-                <!-- Generate Year Group options dynamically based on data -->
                 <?php
                 $yearGroups = array_unique(array_column($data, 'YearGroup'));
                 foreach ($yearGroups as $yearGroup): ?>
@@ -95,17 +116,16 @@ function exportCSV($data, $startDate, $endDate) {
                 <?php endforeach; ?>
             </select>
 
-            <label for="genderFilter">Gender:</label>
-            <select id="genderFilter" onchange="filterTable()">
+            <label for="genderFilter" class="mr-2">Gender:</label>
+            <select id="genderFilter" class="form-control" onchange="filterTable()">
                 <option value="">All</option>
                 <option value="M">Male</option>
                 <option value="F">Female</option>
-                <!-- Add more gender options if necessary -->
             </select>
         </div>
 
-        <table id="reportTable" border="1">
-            <thead>
+        <table id="reportTable" class="table table-bordered">
+            <thead class="thead-dark">
                 <tr>
                     <th>Database</th>
                     <th>Official Name</th>
@@ -147,15 +167,6 @@ function exportCSV($data, $startDate, $endDate) {
             </tbody>
         </table>
     <?php endif; ?>
-
-    <nav>
-        <ul>
-            <li><a href="landing.php">Home</a></li>
-            <li><a href="register.php">Register</a></li>
-        </ul>
-    </nav>
-    <a href="logout.php">Logout</a>
-
     <script>
         function filterTable() {
             var databaseFilter = document.getElementById("databaseFilter").value.toLowerCase();
@@ -189,5 +200,6 @@ function exportCSV($data, $startDate, $endDate) {
             newWin.close();
         }
     </script>
+</div>
 </body>
 </html>
