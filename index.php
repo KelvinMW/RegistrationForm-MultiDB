@@ -430,7 +430,7 @@ $databases = [
                                     <h3 class="fw-normal">Family Details</h3>
                                     <div class="form-outline form-white">
                           <label class="form-label" for="form3Examplea2">Home Address *Unit, Building, Street</label>
-                          <select class="select" id="address1">
+                          <select class="select" id="address1" name="address1" required>
                             <option value="Ayaxa">Ayaxa</option>
                             <option value="Bada Cas">Bada Cas</option>
                             <option value="Biyo dhacay">Biyo dhacay</option>

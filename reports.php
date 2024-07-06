@@ -43,7 +43,7 @@ function exportCSV($data, $startDate, $endDate) {
     header('Content-Disposition: attachment;filename="report_' . $startDate . '_to_' . $endDate . '.csv"');
 
     $output = fopen('php://output', 'w');
-    fputcsv($output, ['Database', 'Official Name', 'Gender', 'Username', 'DOB', 'Email', 'Address', 'Phone', 'Country of Birth', 'Emergency Contact 1', 'Emergency Contact 1 Number', 'Emergency Contact 2', 'Emergency Contact 2 Number', 'Form Group', 'Year Group']);
+    fputcsv($output, ['Database', 'Official Name', 'Enrolment Date', 'Gender', 'Username', 'DOB', 'Email', 'Address', 'Phone', 'Country of Birth', 'Emergency Contact 1', 'Emergency Contact 1 Number', 'Emergency Contact 2', 'Emergency Contact 2 Number', 'Form Group', 'Year Group']);
 
     foreach ($data as $row) {
         fputcsv($output, $row);
@@ -129,6 +129,7 @@ function exportCSV($data, $startDate, $endDate) {
                 <tr>
                     <th>Database</th>
                     <th>Official Name</th>
+                    <th>Enrolment Date</th>
                     <th>Gender</th>
                     <th>Username</th>
                     <th>DOB</th>
@@ -149,6 +150,7 @@ function exportCSV($data, $startDate, $endDate) {
                     <tr>
                         <td><?php echo htmlspecialchars($row['database']); ?></td>
                         <td><?php echo htmlspecialchars($row['officialName']); ?></td>
+                        <td><?php echo htmlspecialchars($row['dateStart']); ?></td>
                         <td><?php echo htmlspecialchars($row['gender']); ?></td>
                         <td><?php echo htmlspecialchars($row['username']); ?></td>
                         <td><?php echo htmlspecialchars($row['dob']); ?></td>

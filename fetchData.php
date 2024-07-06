@@ -12,7 +12,7 @@ function fetchData($startDate, $endDate, $database) {
 
   $sql = "
     SELECT 
-      gp.officialName, gp.gender, gp.username, 
+      gp.officialName, gp.dateStart, gp.gender, gp.username, 
       DATE_FORMAT(gp.dateStart, '%Y-%m-%d') AS formattedDateStart, 
       gp.email, gp.address1, gp.phone1, gp.countryOfBirth,
       gp.emergency1Name, gp.emergency1Number1, gp.emergency2Name, gp.emergency2Number2,

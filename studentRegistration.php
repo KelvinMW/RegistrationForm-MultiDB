@@ -191,8 +191,7 @@ if ($result && $row = $result->fetch_assoc()) {
 }
 // Prepare insert statement
 $sql = "INSERT INTO gibbonPerson (
-    title,surname, firstName, preferredName, officialName, gender, username, status, canLogin, gibbonRoleIDPrimary, dob, email, emailAlternate,
-    address1, address1District, address1Country, phone1, countryOfBirth, emergency1Name, emergency1Number1, emergency1Number2,
+    title,surname, firstName, preferredName, officialName, gender, username, status, canLogin, gibbonRoleIDPrimary, dob, email, emailAlternate, address1, address1District, address1Country, phone1, countryOfBirth, emergency1Name, emergency1Number1, emergency1Number2,
     emergency1Relationship, emergency2Name, emergency2Number1, emergency2Number2, emergency2Relationship, studentID, dateStart,
     lastSchool, privacy, studentAgreements, dayType, nameInCharacters, passwordStrong, passwordStrongSalt, gibbonRoleIDAll, address2, address2District, address2Country, phone2
     , phone1CountryCode, phone2CountryCode, phone3CountryCode, phone3, phone4CountryCode, phone4, website, languageFirst, languageSecond, languageThird,
