@@ -191,7 +191,7 @@ if ($result && $row = $result->fetch_assoc()) {
 }
 // Prepare insert statement
 $sql = "INSERT INTO gibbonPerson (
-    title,preferredName, officialName, gender, username, status, canLogin, gibbonRoleIDPrimary, dob, email, emailAlternate,
+    title,surname, firstName, preferredName, officialName, gender, username, status, canLogin, gibbonRoleIDPrimary, dob, email, emailAlternate,
     address1, address1District, address1Country, phone1, countryOfBirth, emergency1Name, emergency1Number1, emergency1Number2,
     emergency1Relationship, emergency2Name, emergency2Number1, emergency2Number2, emergency2Relationship, studentID, dateStart,
     lastSchool, privacy, studentAgreements, dayType, nameInCharacters, passwordStrong, passwordStrongSalt, gibbonRoleIDAll, address2, address2District, address2Country, phone2
@@ -203,7 +203,7 @@ $sql = "INSERT INTO gibbonPerson (
      viewCalendarSchool, viewCalendarPersonal, viewCalendarSpaceBooking, fields
 ) VALUES (?,?,?, ?, ?, ?, ?, ?, ?, ?,?, ?, ?, ?,?, ?, ?,?, ?, ?, ?, ?,
  ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
-  ?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+  ?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 
 // Prepare the statement
 $stmt = $conn->prepare($sql);
@@ -212,8 +212,8 @@ if ($stmt === false) {
 }
 
 // Bind values to the statement
-$stmt->bind_param("ssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss",
-    $title, $preferredName, $officialName, $gender, $username, $status, $canLogin, $gibbonRoleIDPrimary, $dob, $email, $emailAlternate,
+$stmt->bind_param("ssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss",
+    $title,$surname, $firstName, $preferredName, $officialName, $gender, $username, $status, $canLogin, $gibbonRoleIDPrimary, $dob, $email, $emailAlternate,
     $address1, $address1District, $address1Country, $phone1, $countryOfBirth, $emergency1Name, $emergency1Number1, $emergency1Number2,
     $emergency1Relationship, $emergency2Name, $emergency2Number1, $emergency2Number2, $emergency2Relationship, $studentID, $dateStart,
     $lastSchool, $privacy, $studentAgreements, $dayType, $nameInCharacters, $passwordStrong, $passwordStrongSalt, $gibbonRoleIDAll, $address2, $address2District, $address2Country, $phone2
