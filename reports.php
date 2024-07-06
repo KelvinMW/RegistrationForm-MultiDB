@@ -1,6 +1,5 @@
 <?php
 session_start();
-
 if (!isset($_SESSION['user_id'])) {
     header("Location: login.php");
     exit();
@@ -23,7 +22,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             foreach ($fetchedData as &$row) {
                 $row['database'] = $database; // Add database information to each row
             }
-            $data = array_merge($data, $fetchedData);
+
+            // Ensure no duplicate records
+            foreach ($fetchedData as $row) {
+                if (!in_array($row, $data)) {
+                    $data[] = $row;
+                }
+            }
         }
 
         // Store dates in session for CSV export
@@ -53,7 +58,6 @@ function exportCSV($data, $startDate, $endDate) {
     exit();
 }
 ?>
-
 <!DOCTYPE html>
 <html>
 <head>
@@ -179,27 +183,33 @@ function exportCSV($data, $startDate, $endDate) {
             var rows = table.getElementsByTagName("tr");
 
             for (var i = 1; i < rows.length; i++) {
-                var cells = rows[i].getElementsByTagName("td");
-                var database = cells[0].innerText.toLowerCase();
-                var yearGroup = cells[13].innerText.toLowerCase();
-                var gender = cells[2].innerText.toLowerCase();
+                var databaseCell = rows[i].getElementsByTagName("td")[0];
+                var yearGroupCell = rows[i].getElementsByTagName("td")[15];
+                var genderCell = rows[i].getElementsByTagName("td")[3];
 
-                if ((databaseFilter === "" || database.includes(databaseFilter)) &&
-                    (yearGroupFilter === "" || yearGroup.includes(yearGroupFilter)) &&
-                    (genderFilter === "" || gender.includes(genderFilter))) {
-                    rows[i].style.display = "";
-                } else {
-                    rows[i].style.display = "none";
+                if (databaseCell && yearGroupCell && genderCell) {
+                    var database = databaseCell.textContent.toLowerCase();
+                    var yearGroup = yearGroupCell.textContent.toLowerCase();
+                    var gender = genderCell.textContent.toLowerCase();
+
+                    if ((databaseFilter === "" || database === databaseFilter) &&
+                        (yearGroupFilter === "" || yearGroup === yearGroupFilter) &&
+                        (genderFilter === "" || gender === genderFilter)) {
+                        rows[i].style.display = "";
+                    } else {
+                        rows[i].style.display = "none";
+                    }
                 }
             }
         }
 
         function printTable() {
-            var divToPrint = document.getElementById("reportTable");
-            var newWin = window.open("");
-            newWin.document.write(divToPrint.outerHTML);
-            newWin.print();
-            newWin.close();
+            var printContents = document.getElementById("reportTable").outerHTML;
+            var originalContents = document.body.innerHTML;
+
+            document.body.innerHTML = "<html><head><title>Print</title></head><body>" + printContents + "</body>";
+            window.print();
+            document.body.innerHTML = originalContents;
         }
     </script>
 </div>
